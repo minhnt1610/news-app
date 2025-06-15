@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FaGoogle, FaFacebookF } from "react-icons/fa";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -100,13 +101,14 @@ export default function Login() {
               height: 40,
               fontSize: 22,
               cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
             title="Login with Google"
             onClick={() => alert("Google login (demo)")}
           >
-            <span role="img" aria-label="Google">
-              🔵
-            </span>
+            <FaGoogle color="#DB4437" size={22} />
           </button>
           <button
             type="button"
@@ -118,13 +120,14 @@ export default function Login() {
               height: 40,
               fontSize: 22,
               cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
             title="Login with Facebook"
             onClick={() => alert("Facebook login (demo)")}
           >
-            <span role="img" aria-label="Facebook">
-              🔷
-            </span>
+            <FaFacebookF color="#1877f3" size={22} />
           </button>
         </div>
         <div style={{ textAlign: "center", marginTop: 8 }}>
