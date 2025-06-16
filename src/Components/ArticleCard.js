@@ -3,24 +3,24 @@ import React from "react";
 export default function ArticleCard({ article, onClick }) {
   return (
     <div
+      className="card h-100 shadow-sm"
+      style={{ cursor: "pointer" }}
       onClick={() => onClick(article)}
-      style={{
-        border: "1px solid #ccc",
-        borderRadius: 5,
-        padding: 10,
-        marginBottom: 10,
-        cursor: "pointer",
-      }}
     >
-      <h3>{article.title}</h3>
       {article.urlToImage && (
         <img
           src={article.urlToImage}
           alt={article.title}
-          style={{ width: "100%", height: "auto" }}
+          className="card-img-top"
+          style={{ maxHeight: 180, objectFit: "cover" }}
         />
       )}
-      <p>{article.description}</p>
+      <div className="card-body">
+        <h5 className="card-title">{article.title}</h5>
+        <p className="card-text" style={{ color: "#555" }}>
+          {article.description}
+        </p>
+      </div>
     </div>
   );
 }

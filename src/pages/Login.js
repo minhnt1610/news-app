@@ -14,97 +14,47 @@ export default function Login() {
       setError("Please enter both email and password.");
       return;
     }
-    // Fake login logic
     navigate("/news");
   }
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "linear-gradient(135deg, #ece9f7 0%, #d1e3ff 100%)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
+    <div className="d-flex justify-content-center align-items-center vh-100" style={{ background: "linear-gradient(135deg, #ece9f7 0%, #d1e3ff 100%)" }}>
       <form
         onSubmit={handleLogin}
-        style={{
-          background: "#fff",
-          padding: 32,
-          borderRadius: 16,
-          boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
-          minWidth: 320,
-          display: "flex",
-          flexDirection: "column",
-          gap: 18,
-        }}
+        className="card p-4 shadow"
+        style={{ minWidth: 340, borderRadius: 16 }}
       >
-        <h2 style={{ textAlign: "center", margin: 0 }}>Login</h2>
+        <h2 className="text-center mb-3">Login</h2>
         <input
           type="email"
+          className="form-control mb-2"
           placeholder="Email"
           value={email}
           onChange={e => setEmail(e.target.value)}
-          style={{
-            padding: 12,
-            borderRadius: 8,
-            border: "1px solid #ccc",
-            fontSize: 16,
-          }}
         />
         <input
           type="password"
+          className="form-control mb-2"
           placeholder="Password"
           value={password}
           onChange={e => setPassword(e.target.value)}
-          style={{
-            padding: 12,
-            borderRadius: 8,
-            border: "1px solid #ccc",
-            fontSize: 16,
-          }}
         />
         {error && (
-          <div style={{ color: "red", fontSize: 14, textAlign: "center" }}>
+          <div className="alert alert-danger py-1 text-center" style={{ fontSize: 14 }}>
             {error}
           </div>
         )}
-        <button
-          type="submit"
-          style={{
-            padding: 12,
-            borderRadius: 8,
-            border: "none",
-            background: "#1976d2",
-            color: "#fff",
-            fontWeight: "bold",
-            fontSize: 16,
-            cursor: "pointer",
-            marginTop: 8,
-          }}
-        >
+        <button type="submit" className="btn btn-primary w-100 mb-2">
           Login
         </button>
-        <div style={{ textAlign: "center", color: "#888", fontSize: 14 }}>
+        <div className="text-center text-secondary mb-2" style={{ fontSize: 14 }}>
           Or login with
         </div>
-        <div style={{ display: "flex", justifyContent: "center", gap: 16 }}>
+        <div className="d-flex justify-content-center gap-2 mb-2">
           <button
             type="button"
-            style={{
-              background: "#fff",
-              border: "1px solid #eee",
-              borderRadius: "50%",
-              width: 40,
-              height: 40,
-              fontSize: 22,
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
+            className="btn btn-light border rounded-circle d-flex align-items-center justify-content-center"
+            style={{ width: 40, height: 40 }}
             title="Login with Google"
             onClick={() => alert("Google login (demo)")}
           >
@@ -112,26 +62,16 @@ export default function Login() {
           </button>
           <button
             type="button"
-            style={{
-              background: "#fff",
-              border: "1px solid #eee",
-              borderRadius: "50%",
-              width: 40,
-              height: 40,
-              fontSize: 22,
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
+            className="btn btn-light border rounded-circle d-flex align-items-center justify-content-center"
+            style={{ width: 40, height: 40 }}
             title="Login with Facebook"
             onClick={() => alert("Facebook login (demo)")}
           >
             <FaFacebookF color="#1877f3" size={22} />
           </button>
         </div>
-        <div style={{ textAlign: "center", marginTop: 8 }}>
-          <a href="#" style={{ color: "#1976d2", textDecoration: "none", fontSize: 14 }}>
+        <div className="text-center">
+          <a href="#" className="text-primary" style={{ fontSize: 14 }}>
             Register
           </a>
         </div>
