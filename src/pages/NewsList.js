@@ -8,7 +8,7 @@ export default function NewsList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const API_KEY = "652fc01bbc1340f1aad381b1f81ef87b"; // <--- Replace with your real API key
+  const API_KEY = "b590b8fdb4eab9cbb391b5feb040141f"; // <--- Replace with your real API key
 
   useEffect(() => {
     setLoading(true);

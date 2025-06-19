@@ -1,8 +1,8 @@
 export async function fetchTopHeadlines(apiKey) {
-  const url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${apiKey}`;
-  // Use a public CORS proxy for demo purposes
-  const res = await fetch("https://corsproxy.io/?" + encodeURIComponent(url));
+  const url = `https://gnews.io/api/v4/top-headlines?lang=en&country=us&token=${apiKey}`;
+  const res = await fetch(url);
   if (!res.ok) throw new Error(`Network response was ${res.status}`);
   const data = await res.json();
+  // GNews returns articles in data.articles
   return data.articles || [];
 }
