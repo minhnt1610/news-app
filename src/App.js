@@ -9,13 +9,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Login screen at root */}
         <Route path="/" element={<Login />} />
-
-        {/* After login, go to news list */}
         <Route path="/news" element={<NewsList />} />
-
-        {/* When clicking an article */}
         <Route path="/detail" element={<NewsDetail />} />
       </Routes>
     </Router>
@@ -23,4 +18,3 @@ function App() {
 }
 
 export default App;
-

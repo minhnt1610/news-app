@@ -1,20 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ArticleCard from "../Components/ArticleCard";
-
-async function fetchTopHeadlines(apiKey) {
-  const res = await fetch(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${apiKey}`);
-  if (!res.ok) throw new Error(`Network response was ${res.status}`);
-  const data = await res.json();
-  return data.articles || [];
-}
+import { fetchTopHeadlines } from "../models/newsAPI";
 
 export default function NewsList() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const API_KEY = "652fc01bbc1340f1aad381b1f81ef87b"; // Replace with your real API key
+  const API_KEY = "652fc01bbc1340f1aad381b1f81ef87b"; // <--- Replace with your real API key
 
   useEffect(() => {
     setLoading(true);
