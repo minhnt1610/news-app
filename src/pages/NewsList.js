@@ -8,7 +8,7 @@ export default function NewsList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const API_KEY = "b590b8fdb4eab9cbb391b5feb040141f"; // <--- Replace with your real API key
+  const API_KEY = "b590b8fdb4eab9cbb391b5feb040141f";
 
   useEffect(() => {
     setLoading(true);
@@ -25,9 +25,14 @@ export default function NewsList() {
 
   return (
     <div className="container py-4">
-      <div className="d-flex align-items-center mb-4">
-        <h2 className="fw-bold mb-0" style={{ color: "#0d6efd", letterSpacing: 1 }}>Top Headlines</h2>
-        <span className="ms-2 badge bg-primary-subtle text-primary">{articles.length}</span>
+      <div className="d-flex align-items-center justify-content-between mb-4">
+        <div className="d-flex align-items-center">
+          <h2 className="fw-bold mb-0" style={{ color: "#0d6efd", letterSpacing: 1 }}>Top Headlines</h2>
+          <span className="ms-2 badge bg-primary-subtle text-primary">{articles.length}</span>
+        </div>
+        <button className="btn btn-outline-danger" onClick={() => navigate("/")}>
+          Sign out
+        </button>
       </div>
       {loading ? (
         <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "60vh" }}>

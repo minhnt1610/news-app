@@ -9,21 +9,29 @@ export default function NewsDetail2() {
   if (!article) {
     return (
       <div className="container py-4">
-        <div className="alert alert-warning text-center">Article not found.</div>
-        <div className="text-center">
+        <div className="d-flex justify-content-between mb-3">
           <button className="btn btn-outline-secondary" onClick={() => navigate("/altnews")}>
-            Back to NewsData
+            &larr; Back
+          </button>
+          <button className="btn btn-outline-danger" onClick={() => navigate("/")}>
+            Sign out
           </button>
         </div>
+        <div className="alert alert-warning text-center">Article not found.</div>
       </div>
     );
   }
 
   return (
     <div className="container py-4">
-      <button className="btn btn-outline-secondary mb-3" onClick={() => navigate("/altnews")}>
-        &larr; Back
-      </button>
+      <div className="d-flex justify-content-between mb-3">
+        <button className="btn btn-outline-secondary" onClick={() => navigate("/altnews")}>
+          &larr; Back
+        </button>
+        <button className="btn btn-outline-danger" onClick={() => navigate("/")}>
+          Sign out
+        </button>
+      </div>
       <div className="card shadow">
         {article.image_url && (
           <img

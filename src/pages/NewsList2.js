@@ -34,9 +34,14 @@ export default function NewsList2() {
 
   return (
     <div className="container py-4">
-      <div className="d-flex align-items-center mb-4">
-        <h2 className="fw-bold mb-0" style={{ color: "#6610f2", letterSpacing: 1 }}>NewsData Headlines</h2>
-        <span className="ms-2 badge bg-secondary-subtle text-secondary">{articles.length}</span>
+      <div className="d-flex align-items-center justify-content-between mb-4">
+        <div className="d-flex align-items-center">
+          <h2 className="fw-bold mb-0" style={{ color: "#6610f2", letterSpacing: 1 }}>NewsData Headlines</h2>
+          <span className="ms-2 badge bg-secondary-subtle text-secondary">{articles.length}</span>
+        </div>
+        <button className="btn btn-outline-danger" onClick={() => navigate("/")}>
+          Sign out
+        </button>
       </div>
       {loading ? (
         <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "60vh" }}>
