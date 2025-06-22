@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-// Sử dụng NewsData.io API miễn phí (hoặc bạn có thể thay bằng API free khác)
 const API_URL = "https://newsdata.io/api/1/news?country=us&language=en&apikey=pub_36710b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b";
 
 export default function NewsList2() {
@@ -16,7 +15,12 @@ export default function NewsList2() {
     fetch(API_URL)
       .then((res) => res.json())
       .then((data) => {
-        setArticles(data.results || []);
+        // Đảm bảo data.results là mảng, nếu không thì set []
+        if (Array.isArray(data.results)) {
+          setArticles(data.results);
+        } else {
+          setArticles([]);
+        }
         setLoading(false);
       })
       .catch(() => {
@@ -51,10 +55,11 @@ export default function NewsList2() {
     );
   }
 
+  // Đảm bảo articles là mảng trước khi map
   return (
     <div className="container py-4">
       <h2 className="mb-4">NewsData Headlines</h2>
-      {articles.length === 0 ? (
+      {!Array.isArray(articles) || articles.length === 0 ? (
         <div className="alert alert-info text-center">No articles found.</div>
       ) : (
         <div className="row">
