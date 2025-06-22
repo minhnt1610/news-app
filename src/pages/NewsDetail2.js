@@ -24,7 +24,7 @@ export default function NewsDetail2() {
       <button className="btn btn-outline-secondary mb-3" onClick={() => navigate("/altnews")}>
         &larr; Back
       </button>
-      <div className="card">
+      <div className="card shadow">
         {article.image_url && (
           <img
             src={article.image_url}
@@ -34,10 +34,10 @@ export default function NewsDetail2() {
           />
         )}
         <div className="card-body">
-          <h3 className="card-title">{article.title}</h3>
+          <h3 className="card-title fw-bold" style={{ color: "#6610f2" }}>{article.title}</h3>
           <p className="card-text">{article.content || article.description}</p>
           {article.link && (
-            <a href={article.link} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
+            <a href={article.link} target="_blank" rel="noopener noreferrer" className="btn btn-secondary mt-2">
               Read Full Article
             </a>
           )}

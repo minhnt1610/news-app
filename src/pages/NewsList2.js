@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const API_URL = "https://newsdata.io/api/1/news?country=us&language=en&apikey=pub_36710b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b";
+const API_URL = "https://newsdata.io/api/1/news?country=us&language=en&apikey=pub_8333aa654db24ccb8881a25fdfff1376";
 
 export default function NewsList2() {
   const [articles, setArticles] = useState([]);
@@ -15,7 +15,6 @@ export default function NewsList2() {
     fetch(API_URL)
       .then((res) => res.json())
       .then((data) => {
-        // Đảm bảo data.results là mảng, nếu không thì set []
         if (Array.isArray(data.results)) {
           setArticles(data.results);
         } else {
@@ -33,40 +32,27 @@ export default function NewsList2() {
     navigate("/altdetail", { state: { article } });
   }
 
-  if (loading) {
-    return (
-      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "60vh" }}>
-        <div className="spinner-border text-secondary me-2" role="status" />
-        <span>Loading articles…</span>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="container py-4">
-        <div className="alert alert-danger text-center">{error}</div>
-        <div className="text-center">
-          <button className="btn btn-outline-secondary" onClick={() => window.location.reload()}>
-            Try Again
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // Đảm bảo articles là mảng trước khi map
   return (
     <div className="container py-4">
-      <h2 className="mb-4">NewsData Headlines</h2>
-      {!Array.isArray(articles) || articles.length === 0 ? (
+      <div className="d-flex align-items-center mb-4">
+        <h2 className="fw-bold mb-0" style={{ color: "#6610f2", letterSpacing: 1 }}>NewsData Headlines</h2>
+        <span className="ms-2 badge bg-secondary-subtle text-secondary">{articles.length}</span>
+      </div>
+      {loading ? (
+        <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "60vh" }}>
+          <div className="spinner-border text-secondary me-2" role="status" />
+          <span>Loading articles…</span>
+        </div>
+      ) : error ? (
+        <div className="alert alert-danger text-center">{error}</div>
+      ) : articles.length === 0 ? (
         <div className="alert alert-info text-center">No articles found.</div>
       ) : (
         <div className="row">
           {articles.map((article, idx) => (
             <div className="col-md-6 col-lg-4 mb-4" key={idx}>
               <div
-                className="card h-100"
+                className="card h-100 shadow-sm"
                 style={{ cursor: "pointer" }}
                 onClick={() => openDetail(article)}
                 tabIndex={0}
