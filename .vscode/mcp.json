@@ -1,0 +1,8 @@
+{
+  "providers": [
+    "github/copilot-web-search",
+    "github/copilot-summarize",
+    "github/copilot-sentiment",
+    "github/copilot-translate"
+  ]
+}
