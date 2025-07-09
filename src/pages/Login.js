@@ -92,9 +92,9 @@ export default function Login() {
           </button>
         </div>
         <div className="text-center">
-          <a href="#" className="text-primary" style={{ fontSize: 14 }}>
+          <button type="button" className="btn btn-link text-primary p-0" style={{ fontSize: 14 }}>
             Register
-          </a>
+          </button>
         </div>
         <div className="text-center mt-3">
           <small className="text-muted">© {new Date().getFullYear()} MINHNEWS</small>

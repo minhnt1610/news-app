@@ -1,5 +1,6 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { formatNewsDate } from "../utils/dateFormatter";
 
 export default function NewsDetail2() {
   const location = useLocation();
@@ -43,6 +44,11 @@ export default function NewsDetail2() {
         )}
         <div className="card-body">
           <h3 className="card-title fw-bold" style={{ color: "#6610f2" }}>{article.title}</h3>
+          {article.pubDate && (
+            <p className="text-muted mb-3">
+              <small>Published {formatNewsDate(article.pubDate)}</small>
+            </p>
+          )}
           <p className="card-text">{article.content || article.description}</p>
           {article.link && (
             <a href={article.link} target="_blank" rel="noopener noreferrer" className="btn btn-secondary mt-2">
