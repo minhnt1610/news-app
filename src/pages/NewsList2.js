@@ -10,22 +10,89 @@ export default function NewsList2() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setLoading(true);
-    setError("");
-    fetch(API_URL)
-      .then((res) => res.json())
-      .then((data) => {
+    // Use async function with comprehensive error handling
+    const fetchArticles = async () => {
+      try {
+        setLoading(true);
+        setError("");
+        
+        // Validate API URL
+        if (!API_URL) {
+          throw new Error('API URL is not configured');
+        }
+
+        // Wrap fetch in try/catch to handle network errors
+        const res = await fetch(API_URL);
+        
+        // Enhanced error handling with specific status codes
+        if (!res.ok) {
+          const errorBody = await res.text().catch(() => 'Unknown error');
+          switch (res.status) {
+            case 401:
+              throw new Error('Invalid API key or unauthorized access');
+            case 403:
+              throw new Error('API access forbidden. Check your API key permissions');
+            case 404:
+              throw new Error('API endpoint not found');
+            case 429:
+              throw new Error('API rate limit exceeded. Please try again later');
+            case 500:
+              throw new Error('Internal server error. Please try again later');
+            default:
+              throw new Error(`Network error: ${res.status} - ${errorBody}`);
+          }
+        }
+
+        // Parse JSON response with error handling
+        const data = await res.json();
+        
+        // Validate response structure
+        if (!data || typeof data !== 'object') {
+          throw new Error('Invalid response format from API');
+        }
+
+        // NewsData.io returns articles in data.results
         if (Array.isArray(data.results)) {
           setArticles(data.results);
-        } else {
+        } else if (data.results === null || data.results === undefined) {
           setArticles([]);
+        } else {
+          throw new Error('Invalid response format: results should be an array or null');
         }
+        
+      } catch (error) {
+        // Enhanced error logging with context
+        console.error('Error loading articles:', {
+          error: error.message,
+          url: API_URL,
+          timestamp: new Date().toISOString()
+        });
+        
+        // Provide user-friendly error messages based on error type
+        if (error.message.includes('API key')) {
+          setError('Configuration error: Please check API key settings');
+        } else if (error.message.includes('Network')) {
+          setError('Network error: Please check your internet connection and try again');
+        } else if (error.message.includes('rate limit')) {
+          setError('Too many requests: Please wait a moment and try again');
+        } else if (error.message.includes('unauthorized') || error.message.includes('forbidden')) {
+          setError('Authentication error: Please check your API credentials');
+        } else if (error.message.includes('not found')) {
+          setError('Service unavailable: News API endpoint not found');
+        } else {
+          setError('Failed to load articles. Please try again later.');
+        }
+      } finally {
         setLoading(false);
-      })
-      .catch(() => {
-        setError("Failed to load articles. Please try again.");
-        setLoading(false);
-      });
+      }
+    };
+
+    // Call the async function and handle any uncaught errors
+    fetchArticles().catch((error) => {
+      console.error('Uncaught error in fetchArticles:', error);
+      setError('An unexpected error occurred. Please refresh the page.');
+      setLoading(false);
+    });
   }, []);
 
   function openDetail(article) {
