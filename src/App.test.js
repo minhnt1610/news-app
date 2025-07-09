@@ -1,8 +1,11 @@
-import { render, screen } from '@testing-library/react';
-import App from './App';
+import { formatNewsDate } from './utils/dateFormatter';
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+test('dateFormatter utility works correctly', () => {
+  // Test basic functionality of our new utility
+  expect(formatNewsDate(null)).toBe('Unknown date');
+  expect(formatNewsDate('invalid')).toBe('Invalid date');
+  
+  // Test with a valid date (today)
+  const today = new Date();
+  expect(formatNewsDate(today.toISOString())).toBe('Today');
 });

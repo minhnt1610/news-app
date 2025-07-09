@@ -1,4 +1,5 @@
 import React from "react";
+import { getRelativeTime } from "../utils/dateFormatter";
 
 export default function ArticleCard({ article, onClick }) {
   return (
@@ -20,6 +21,11 @@ export default function ArticleCard({ article, onClick }) {
         <p className="card-text" style={{ color: "#555" }}>
           {article.description}
         </p>
+        {article.publishedAt && (
+          <small className="text-muted">
+            {getRelativeTime(article.publishedAt)}
+          </small>
+        )}
       </div>
     </div>
   );
