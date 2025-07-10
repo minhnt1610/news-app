@@ -2,62 +2,68 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ArticleCard from "../Components/ArticleCard";
 import { fetchTopHeadlines } from "../models/newsAPI";
+import { mockArticles } from "../utils/mockData";
 
 export default function NewsList() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
   const API_KEY = "b590b8fdb4eab9cbb391b5feb040141f";
+  const ARTICLES_PER_PAGE = 5;
 
   useEffect(() => {
-    // Use async function with comprehensive error handling
     const fetchArticles = async () => {
       try {
         setLoading(true);
         setError("");
-        
-        // Validate API key before making request
+
         if (!API_KEY) {
-          throw new Error('API key is not configured');
+          throw new Error("API key is not configured");
         }
 
-        const articles = await fetchTopHeadlines(API_KEY);
-        
-        // Validate response data
-        if (!Array.isArray(articles)) {
-          throw new Error('Invalid response format: articles should be an array');
+        const fetched = await fetchTopHeadlines(API_KEY);
+
+        if (!Array.isArray(fetched)) {
+          throw new Error("Invalid response format: articles should be an array");
         }
-        
-        setArticles(articles);
-      } catch (error) {
-        // Enhanced error handling with specific error messages
-        console.error('Error loading articles:', {
-          error: error.message,
-          timestamp: new Date().toISOString()
-        });
-        
-        // Provide user-friendly error messages based on error type
-        if (error.message.includes('API key')) {
-          setError('Configuration error: Please check API key settings');
-        } else if (error.message.includes('Network')) {
-          setError('Network error: Please check your internet connection and try again');
-        } else if (error.message.includes('rate limit')) {
-          setError('Too many requests: Please wait a moment and try again');
-        } else if (error.message.includes('unauthorized') || error.message.includes('forbidden')) {
-          setError('Authentication error: Please check your API credentials');
+
+        // fallback if fetched is empty
+        if (fetched.length === 0) {
+          setArticles(mockArticles);
         } else {
-          setError('Failed to load articles. Please try again later.');
+          setArticles(fetched);
         }
+      } catch (error) {
+        console.error("Error loading articles:", {
+          error: error.message,
+          timestamp: new Date().toISOString(),
+        });
+
+        if (error.message.includes("API key")) {
+          setError("Configuration error: Please check API key settings");
+        } else if (error.message.includes("Network")) {
+          setError("Network error: Please check your internet connection and try again");
+        } else if (error.message.includes("rate limit")) {
+          setError("Too many requests: Please wait a moment and try again");
+        } else if (error.message.includes("unauthorized") || error.message.includes("forbidden")) {
+          setError("Authentication error: Please check your API credentials");
+        } else {
+          setError("Failed to load articles. Using fallback mock data.");
+        }
+
+        // fallback to mock data
+        setArticles(mockArticles);
       } finally {
         setLoading(false);
       }
     };
 
-    // Call the async function and handle any uncaught errors
     fetchArticles().catch((error) => {
-      console.error('Uncaught error in fetchArticles:', error);
-      setError('An unexpected error occurred. Please refresh the page.');
+      console.error("Uncaught error in fetchArticles:", error);
+      setError("An unexpected error occurred. Please refresh the page.");
+      setArticles(mockArticles);
       setLoading(false);
     });
   }, []);
@@ -65,6 +71,23 @@ export default function NewsList() {
   function openDetail(article) {
     navigate("/detail", { state: { article } });
   }
+
+  const totalPages = Math.ceil(articles.length / ARTICLES_PER_PAGE);
+  const startIndex = (currentPage - 1) * ARTICLES_PER_PAGE;
+  const endIndex = startIndex + ARTICLES_PER_PAGE;
+  const currentArticles = articles.slice(startIndex, endIndex);
+
+  const handlePrevious = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
   return (
     <div className="container py-4">
@@ -87,15 +110,41 @@ export default function NewsList() {
       ) : articles.length === 0 ? (
         <div className="alert alert-info text-center">No articles found.</div>
       ) : (
-        <div className="row">
-          {articles.map((article, idx) => (
-            <div className="col-md-6 col-lg-4 mb-4" key={idx}>
-              <div className="h-100">
-                <ArticleCard article={article} onClick={openDetail} />
+        <>
+          <div className="row">
+            {currentArticles.map((article, idx) => (
+              <div className="col-md-6 col-lg-4 mb-4" key={idx}>
+                <div className="h-100">
+                  <ArticleCard article={article} onClick={openDetail} />
+                </div>
               </div>
+            ))}
+          </div>
+
+          {totalPages > 1 && (
+            <div className="d-flex justify-content-center align-items-center mt-4 pb-5">
+              <button
+                className="btn btn-outline-primary me-2"
+                onClick={handlePrevious}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+
+              <span className="mx-3 text-muted">
+                Page {currentPage} of {totalPages}
+              </span>
+
+              <button
+                className="btn btn-outline-primary ms-2"
+                onClick={handleNext}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
     </div>
   );
