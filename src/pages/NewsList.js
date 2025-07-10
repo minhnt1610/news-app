@@ -14,37 +14,69 @@ export default function NewsList() {
   const ARTICLES_PER_PAGE = 5;
 
   useEffect(() => {
-    setLoading(true);
-    setError("");
-    
-    // Try to fetch real data, but fall back to mock data if it fails
-    fetchTopHeadlines(API_KEY)
-      .then((data) => {
-        if (data && data.length > 0) {
-          setArticles(data);
-        } else {
-          // Use mock data for testing pagination
-          setArticles(mockArticles);
+    const fetchArticles = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        if (!API_KEY) {
+          throw new Error("API key is not configured");
         }
-      })
-      .catch(() => {
-        // Use mock data for testing pagination
+
+        const fetched = await fetchTopHeadlines(API_KEY);
+
+        if (!Array.isArray(fetched)) {
+          throw new Error("Invalid response format: articles should be an array");
+        }
+
+        // fallback if fetched is empty
+        if (fetched.length === 0) {
+          setArticles(mockArticles);
+        } else {
+          setArticles(fetched);
+        }
+      } catch (error) {
+        console.error("Error loading articles:", {
+          error: error.message,
+          timestamp: new Date().toISOString(),
+        });
+
+        if (error.message.includes("API key")) {
+          setError("Configuration error: Please check API key settings");
+        } else if (error.message.includes("Network")) {
+          setError("Network error: Please check your internet connection and try again");
+        } else if (error.message.includes("rate limit")) {
+          setError("Too many requests: Please wait a moment and try again");
+        } else if (error.message.includes("unauthorized") || error.message.includes("forbidden")) {
+          setError("Authentication error: Please check your API credentials");
+        } else {
+          setError("Failed to load articles. Using fallback mock data.");
+        }
+
+        // fallback to mock data
         setArticles(mockArticles);
-      })
-      .finally(() => setLoading(false));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArticles().catch((error) => {
+      console.error("Uncaught error in fetchArticles:", error);
+      setError("An unexpected error occurred. Please refresh the page.");
+      setArticles(mockArticles);
+      setLoading(false);
+    });
   }, []);
 
   function openDetail(article) {
     navigate("/detail", { state: { article } });
   }
 
-  // Calculate pagination values
   const totalPages = Math.ceil(articles.length / ARTICLES_PER_PAGE);
   const startIndex = (currentPage - 1) * ARTICLES_PER_PAGE;
   const endIndex = startIndex + ARTICLES_PER_PAGE;
   const currentArticles = articles.slice(startIndex, endIndex);
 
-  // Pagination handlers
   const handlePrevious = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
@@ -88,7 +120,7 @@ export default function NewsList() {
               </div>
             ))}
           </div>
-          
+
           {totalPages > 1 && (
             <div className="d-flex justify-content-center align-items-center mt-4 pb-5">
               <button
@@ -98,11 +130,11 @@ export default function NewsList() {
               >
                 Previous
               </button>
-              
+
               <span className="mx-3 text-muted">
                 Page {currentPage} of {totalPages}
               </span>
-              
+
               <button
                 className="btn btn-outline-primary ms-2"
                 onClick={handleNext}
