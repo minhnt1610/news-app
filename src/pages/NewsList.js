@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ArticleCard from "../Components/ArticleCard";
 import { fetchTopHeadlines } from "../models/newsAPI";
 import { mockArticles } from "../utils/mockData";
+import { APP_CONFIG } from "../utils/constants";
 
 export default function NewsList() {
   const [articles, setArticles] = useState([]);
@@ -10,8 +11,7 @@ export default function NewsList() {
   const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
-  const API_KEY = "b590b8fdb4eab9cbb391b5feb040141f";
-  const ARTICLES_PER_PAGE = 5;
+  const ARTICLES_PER_PAGE = APP_CONFIG.PAGINATION.DEFAULT_PAGE_SIZE;
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -19,11 +19,7 @@ export default function NewsList() {
         setLoading(true);
         setError("");
 
-        if (!API_KEY) {
-          throw new Error("API key is not configured");
-        }
-
-        const fetched = await fetchTopHeadlines(API_KEY);
+        const fetched = await fetchTopHeadlines();
 
         if (!Array.isArray(fetched)) {
           throw new Error("Invalid response format: articles should be an array");

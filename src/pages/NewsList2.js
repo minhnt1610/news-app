@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const API_URL = "https://newsdata.io/api/1/news?country=us&language=en&apikey=pub_8333aa654db24ccb8881a25fdfff1376";
+import { fetchNewsData } from "../models/newsAPI";
+import { APP_CONFIG } from "../utils/constants";
 
 export default function NewsList2() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
+  const ARTICLES_PER_PAGE = APP_CONFIG.PAGINATION.DEFAULT_PAGE_SIZE;
 
   useEffect(() => {
     // Use async function with comprehensive error handling
@@ -15,56 +17,19 @@ export default function NewsList2() {
       try {
         setLoading(true);
         setError("");
-        
-        // Validate API URL
-        if (!API_URL) {
-          throw new Error('API URL is not configured');
-        }
 
-        // Wrap fetch in try/catch to handle network errors
-        const res = await fetch(API_URL);
+        const results = await fetchNewsData();
         
-        // Enhanced error handling with specific status codes
-        if (!res.ok) {
-          const errorBody = await res.text().catch(() => 'Unknown error');
-          switch (res.status) {
-            case 401:
-              throw new Error('Invalid API key or unauthorized access');
-            case 403:
-              throw new Error('API access forbidden. Check your API key permissions');
-            case 404:
-              throw new Error('API endpoint not found');
-            case 429:
-              throw new Error('API rate limit exceeded. Please try again later');
-            case 500:
-              throw new Error('Internal server error. Please try again later');
-            default:
-              throw new Error(`Network error: ${res.status} - ${errorBody}`);
-          }
-        }
-
-        // Parse JSON response with error handling
-        const data = await res.json();
-        
-        // Validate response structure
-        if (!data || typeof data !== 'object') {
-          throw new Error('Invalid response format from API');
-        }
-
-        // NewsData.io returns articles in data.results
-        if (Array.isArray(data.results)) {
-          setArticles(data.results);
-        } else if (data.results === null || data.results === undefined) {
-          setArticles([]);
+        if (Array.isArray(results)) {
+          setArticles(results);
         } else {
-          throw new Error('Invalid response format: results should be an array or null');
+          setArticles([]);
         }
         
       } catch (error) {
         // Enhanced error logging with context
         console.error('Error loading articles:', {
           error: error.message,
-          url: API_URL,
           timestamp: new Date().toISOString()
         });
         
@@ -99,6 +64,23 @@ export default function NewsList2() {
     navigate("/altdetail", { state: { article } });
   }
 
+  const totalPages = Math.ceil(articles.length / ARTICLES_PER_PAGE);
+  const startIndex = (currentPage - 1) * ARTICLES_PER_PAGE;
+  const endIndex = startIndex + ARTICLES_PER_PAGE;
+  const currentArticles = articles.slice(startIndex, endIndex);
+
+  const handlePrevious = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
   return (
     <div className="container py-4">
       <div className="d-flex align-items-center justify-content-between mb-4">
@@ -120,35 +102,61 @@ export default function NewsList2() {
       ) : articles.length === 0 ? (
         <div className="alert alert-info text-center">No articles found.</div>
       ) : (
-        <div className="row">
-          {articles.map((article, idx) => (
-            <div className="col-md-6 col-lg-4 mb-4" key={idx}>
-              <div
-                className="card h-100 shadow-sm"
-                style={{ cursor: "pointer" }}
-                onClick={() => openDetail(article)}
-                tabIndex={0}
-                title={article.title}
-                onKeyPress={e => {
-                  if (e.key === "Enter" || e.key === " ") openDetail(article);
-                }}
-              >
-                {article.image_url && (
-                  <img
-                    src={article.image_url}
-                    alt={article.title || "News image"}
-                    className="card-img-top"
-                    style={{ height: 180, objectFit: "cover" }}
-                  />
-                )}
-                <div className="card-body">
-                  <h5 className="card-title">{article.title}</h5>
-                  <p className="card-text">{article.description || article.content}</p>
+        <>
+          <div className="row">
+            {currentArticles.map((article, idx) => (
+              <div className="col-md-6 col-lg-4 mb-4" key={idx}>
+                <div
+                  className="card h-100 shadow-sm"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => openDetail(article)}
+                  tabIndex={0}
+                  title={article.title}
+                  onKeyPress={e => {
+                    if (e.key === "Enter" || e.key === " ") openDetail(article);
+                  }}
+                >
+                  {article.image_url && (
+                    <img
+                      src={article.image_url}
+                      alt={article.title || "News image"}
+                      className="card-img-top"
+                      style={{ height: 180, objectFit: "cover" }}
+                    />
+                  )}
+                  <div className="card-body">
+                    <h5 className="card-title">{article.title}</h5>
+                    <p className="card-text">{article.description || article.content}</p>
+                  </div>
                 </div>
               </div>
+            ))}
+          </div>
+
+          {totalPages > 1 && (
+            <div className="d-flex justify-content-center align-items-center mt-4 pb-5">
+              <button
+                className="btn btn-outline-secondary me-2"
+                onClick={handlePrevious}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+
+              <span className="mx-3 text-muted">
+                Page {currentPage} of {totalPages}
+              </span>
+
+              <button
+                className="btn btn-outline-secondary ms-2"
+                onClick={handleNext}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
     </div>
   );
