@@ -32,7 +32,7 @@ export default function NewsList() {
           )
           .map((article, idx) => (
             <div className="col-md-6 mb-4" key={idx}>
-              <ArticleCard article={article} onClick={() => handleArticleClick(article)} />
+              <ArticleCard article={article} onClick={() => openDetail(article)} />
             </div>
           ))}
       </div>

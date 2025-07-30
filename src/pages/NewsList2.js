@@ -1,3 +1,6 @@
+
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 const API_URL = "https://newsdata.io/api/1/news?country=us&language=en&apikey=pub_8333aa654db24ccb8881a25fdfff1376";
 
 export default function NewsList2() {
