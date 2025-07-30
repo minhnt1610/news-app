@@ -12,49 +12,37 @@ export default function NewsList() {
   const navigate = useNavigate();
   const API_KEY = "b590b8fdb4eab9cbb391b5feb040141f";
   const ARTICLES_PER_PAGE = 5;
-
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-  return (
-    <div className="container py-4">
-      <h2 className="mb-4">Top Headlines (GNews)</h2>
-      {loading && <div className="text-center my-4">Loading...</div>}
-      {error && <div className="alert alert-danger text-center">{error}</div>}
-      {!loading && !error && articles.length === 0 && (
-        <div className="alert alert-warning text-center">No articles found.</div>
-      )}
-      <div className="row">
-        {!loading && !error && articles.length > 0 && articles
-          .slice(
-            (currentPage - 1) * ARTICLES_PER_PAGE,
-            currentPage * ARTICLES_PER_PAGE
-          )
-          .map((article, idx) => (
-            <div className="col-md-6 mb-4" key={idx}>
-              <ArticleCard article={article} onClick={() => openDetail(article)} />
-            </div>
-          ))}
-      </div>
-      {/* Pagination */}
-      {!loading && !error && articles.length > ARTICLES_PER_PAGE && (
-        <nav className="d-flex justify-content-center">
-          <ul className="pagination">
-            {Array.from({ length: Math.ceil(articles.length / ARTICLES_PER_PAGE) }, (_, i) => (
-              <li
-                key={i}
-                className={`page-item${currentPage === i + 1 ? " active" : ""}`}
-                onClick={() => setCurrentPage(i + 1)}
-                style={{ cursor: "pointer" }}
-              >
-                <span className="page-link">{i + 1}</span>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      )}
-    </div>
-  );
+        setLoading(true);
+        setError("");
+
+        if (!API_KEY) {
+          throw new Error("API key is not configured");
+        }
+
+        const fetched = await fetchTopHeadlines(API_KEY);
+        console.log("Fetched articles:", fetched);
+
+        if (!Array.isArray(fetched)) {
+          throw new Error("Invalid response format: articles should be an array");
+        }
+
+        // fallback if fetched is empty
+        if (fetched.length === 0) {
+          setArticles(mockArticles);
+          setError("No articles found from API. Showing mock data.");
+        } else {
+          setArticles(fetched);
+        }
+      } catch (error) {
+        console.error("Error loading articles:", {
+          error: error.message,
+          API_KEY,
+        });
+        setError(error.message || "Failed to load articles");
+        setArticles(mockArticles);
       } finally {
         setLoading(false);
       }
@@ -89,6 +77,7 @@ export default function NewsList() {
     }
   };
 
+  // Return JSX at the end of the component
   return (
     <div className="container py-4">
       <div className="d-flex align-items-center justify-content-between mb-4">
@@ -96,8 +85,7 @@ export default function NewsList() {
           <h2 className="fw-bold mb-0" style={{ color: "#0d6efd", letterSpacing: 1 }}>Top Headlines</h2>
           <span className="ms-2 badge bg-primary-subtle text-primary">{articles.length}</span>
         </div>
-        <button className="btn btn-outline-danger" onClick={() => navigate("/")}>
-          Sign out
+        <button className="btn btn-outline-danger" onClick={() => navigate("/")}>Sign out
         </button>
       </div>
       {loading ? (
@@ -129,18 +117,6 @@ export default function NewsList() {
                 disabled={currentPage === 1}
               >
                 Previous
-              </button>
-
-              <span className="mx-3 text-muted">
-                Page {currentPage} of {totalPages}
-              </span>
-
-              <button
-                className="btn btn-outline-primary ms-2"
-                onClick={handleNext}
-                disabled={currentPage === totalPages}
-              >
-                Next
               </button>
             </div>
           )}

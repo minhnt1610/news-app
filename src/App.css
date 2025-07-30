@@ -30,6 +30,44 @@ body[data-theme="dark"] .btn-secondary:hover {
 body[data-theme="dark"] .btn-outline-primary:hover, body[data-theme="dark"] .btn-outline-secondary:hover {
   background: #23272b;
 }
+body[data-theme="dark"] .navbar,
+body[data-theme="dark"] .navbar.bg-light,
+body[data-theme="dark"] .border-top {
+  background: #23272b !important;
+  border-color: #333 !important;
+}
+body[data-theme="dark"] .alert {
+  background: #23272b !important;
+  color: #e2e2e2 !important;
+  border-color: #444 !important;
+}
+body[data-theme="dark"] .modal-content,
+body[data-theme="dark"] .modal,
+body[data-theme="dark"] .settings-modal {
+  background: #23272b !important;
+  color: #e2e2e2 !important;
+  border-radius: 16px;
+}
+body[data-theme="dark"] .form-select,
+body[data-theme="dark"] select,
+body[data-theme="dark"] input,
+body[data-theme="dark"] textarea {
+  background: #23272b !important;
+  color: #e2e2e2 !important;
+  border: 1.5px solid #444 !important;
+}
+body[data-theme="dark"] .form-select:focus,
+body[data-theme="dark"] select:focus,
+body[data-theme="dark"] input:focus,
+body[data-theme="dark"] textarea:focus {
+  background: #23272b !important;
+  color: #fff !important;
+  border-color: #0d6efd !important;
+  outline: none !important;
+}
+.body[data-theme="dark"] .settings-modal label {
+  color: #e2e2e2 !important;
+}
 .App {
   text-align: center;
 }
