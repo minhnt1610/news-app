@@ -28,6 +28,75 @@
   color: #61dafb;
 }
 
+/* --- Custom News App Styles --- */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 12px;
+}
+
+.card {
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07), 0 1.5px 4px rgba(0,0,0,0.04);
+  transition: box-shadow 0.2s;
+  border: none;
+}
+.card:hover {
+  box-shadow: 0 4px 24px rgba(0,0,0,0.13), 0 3px 8px rgba(0,0,0,0.08);
+}
+
+.card-img-top {
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+}
+
+.card-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.card-text {
+  color: #444;
+  font-size: 1rem;
+}
+
+.btn, .btn:focus {
+  border-radius: 8px !important;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s;
+  outline: none !important;
+}
+.btn-primary, .btn-primary:focus {
+  background: #0d6efd;
+  border: none;
+}
+.btn-primary:hover {
+  background: #084298;
+}
+.btn-secondary, .btn-secondary:focus {
+  background: #6610f2;
+  border: none;
+}
+.btn-secondary:hover {
+  background: #4b0bbd;
+}
+.btn-outline-primary:hover, .btn-outline-secondary:hover {
+  background: #f0f4ff;
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 12px 2px;
+  }
+  .card {
+    margin-bottom: 18px;
+  }
+  .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

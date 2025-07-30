@@ -7,6 +7,8 @@ import NewsList from "./pages/NewsList";
 import NewsDetail from "./pages/NewsDetail";
 import NewsList2 from "./pages/NewsList2";
 import NewsDetail2 from "./pages/NewsDetail2";
+import ErrorBoundary from "./Components/ErrorBoundary";
+import BackToTop from "./Components/BackToTop";
 
 function TabBar() {
   const location = useLocation();
@@ -39,14 +41,31 @@ function App() {
       <div>
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/news" element={<NewsList />} />
-          <Route path="/detail" element={<NewsDetail />} />
-          <Route path="/altnews" element={<NewsList2 />} />
-          <Route path="/altdetail" element={<NewsDetail2 />} />
+          <Route path="/news" element={
+            <ErrorBoundary>
+              <NewsList />
+            </ErrorBoundary>
+          } />
+          <Route path="/detail" element={
+            <ErrorBoundary>
+              <NewsDetail />
+            </ErrorBoundary>
+          } />
+          <Route path="/altnews" element={
+            <ErrorBoundary>
+              <NewsList2 />
+            </ErrorBoundary>
+          } />
+          <Route path="/altdetail" element={
+            <ErrorBoundary>
+              <NewsDetail2 />
+            </ErrorBoundary>
+          } />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
 
         <TabBar />
+        <BackToTop />
       </div>
     </Router>
   );

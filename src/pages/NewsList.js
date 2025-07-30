@@ -16,45 +16,45 @@ export default function NewsList() {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        setLoading(true);
-        setError("");
-
-        if (!API_KEY) {
-          throw new Error("API key is not configured");
-        }
-
-        const fetched = await fetchTopHeadlines(API_KEY);
-
-        if (!Array.isArray(fetched)) {
-          throw new Error("Invalid response format: articles should be an array");
-        }
-
-        // fallback if fetched is empty
-        if (fetched.length === 0) {
-          setArticles(mockArticles);
-        } else {
-          setArticles(fetched);
-        }
-      } catch (error) {
-        console.error("Error loading articles:", {
-          error: error.message,
-          timestamp: new Date().toISOString(),
-        });
-
-        if (error.message.includes("API key")) {
-          setError("Configuration error: Please check API key settings");
-        } else if (error.message.includes("Network")) {
-          setError("Network error: Please check your internet connection and try again");
-        } else if (error.message.includes("rate limit")) {
-          setError("Too many requests: Please wait a moment and try again");
-        } else if (error.message.includes("unauthorized") || error.message.includes("forbidden")) {
-          setError("Authentication error: Please check your API credentials");
-        } else {
-          setError("Failed to load articles. Using fallback mock data.");
-        }
-
-        // fallback to mock data
-        setArticles(mockArticles);
+  return (
+    <div className="container py-4">
+      <h2 className="mb-4">Top Headlines (GNews)</h2>
+      {loading && <div className="text-center my-4">Loading...</div>}
+      {error && <div className="alert alert-danger text-center">{error}</div>}
+      {!loading && !error && articles.length === 0 && (
+        <div className="alert alert-warning text-center">No articles found.</div>
+      )}
+      <div className="row">
+        {!loading && !error && articles.length > 0 && articles
+          .slice(
+            (currentPage - 1) * ARTICLES_PER_PAGE,
+            currentPage * ARTICLES_PER_PAGE
+          )
+          .map((article, idx) => (
+            <div className="col-md-6 mb-4" key={idx}>
+              <ArticleCard article={article} onClick={() => handleArticleClick(article)} />
+            </div>
+          ))}
+      </div>
+      {/* Pagination */}
+      {!loading && !error && articles.length > ARTICLES_PER_PAGE && (
+        <nav className="d-flex justify-content-center">
+          <ul className="pagination">
+            {Array.from({ length: Math.ceil(articles.length / ARTICLES_PER_PAGE) }, (_, i) => (
+              <li
+                key={i}
+                className={`page-item${currentPage === i + 1 ? " active" : ""}`}
+                onClick={() => setCurrentPage(i + 1)}
+                style={{ cursor: "pointer" }}
+              >
+                <span className="page-link">{i + 1}</span>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
+    </div>
+  );
       } finally {
         setLoading(false);
       }

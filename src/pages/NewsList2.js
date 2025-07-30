@@ -1,6 +1,3 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-
 const API_URL = "https://newsdata.io/api/1/news?country=us&language=en&apikey=pub_8333aa654db24ccb8881a25fdfff1376";
 
 export default function NewsList2() {
@@ -10,21 +7,17 @@ export default function NewsList2() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Use async function with comprehensive error handling
     const fetchArticles = async () => {
       try {
         setLoading(true);
         setError("");
-        
-        // Validate API URL
+
         if (!API_URL) {
           throw new Error('API URL is not configured');
         }
 
-        // Wrap fetch in try/catch to handle network errors
         const res = await fetch(API_URL);
-        
-        // Enhanced error handling with specific status codes
+
         if (!res.ok) {
           const errorBody = await res.text().catch(() => 'Unknown error');
           switch (res.status) {
@@ -43,15 +36,10 @@ export default function NewsList2() {
           }
         }
 
-        // Parse JSON response with error handling
         const data = await res.json();
-        
-        // Validate response structure
         if (!data || typeof data !== 'object') {
           throw new Error('Invalid response format from API');
         }
-
-        // NewsData.io returns articles in data.results
         if (Array.isArray(data.results)) {
           setArticles(data.results);
         } else if (data.results === null || data.results === undefined) {
@@ -59,16 +47,12 @@ export default function NewsList2() {
         } else {
           throw new Error('Invalid response format: results should be an array or null');
         }
-        
       } catch (error) {
-        // Enhanced error logging with context
         console.error('Error loading articles:', {
           error: error.message,
           url: API_URL,
           timestamp: new Date().toISOString()
         });
-        
-        // Provide user-friendly error messages based on error type
         if (error.message.includes('API key')) {
           setError('Configuration error: Please check API key settings');
         } else if (error.message.includes('Network')) {
@@ -86,8 +70,6 @@ export default function NewsList2() {
         setLoading(false);
       }
     };
-
-    // Call the async function and handle any uncaught errors
     fetchArticles().catch((error) => {
       console.error('Uncaught error in fetchArticles:', error);
       setError('An unexpected error occurred. Please refresh the page.');
@@ -106,9 +88,7 @@ export default function NewsList2() {
           <h2 className="fw-bold mb-0" style={{ color: "#6610f2", letterSpacing: 1 }}>NewsData Headlines</h2>
           <span className="ms-2 badge bg-secondary-subtle text-secondary">{articles.length}</span>
         </div>
-        <button className="btn btn-outline-danger" onClick={() => navigate("/")}>
-          Sign out
-        </button>
+        <button className="btn btn-outline-danger" onClick={() => navigate("/")}>Sign out</button>
       </div>
       {loading ? (
         <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "60vh" }}>

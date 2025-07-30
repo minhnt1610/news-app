@@ -4,3 +4,6 @@ Always provide detailed step - by - step explanation when editing code or sugges
 
 Always provide checkboxes for problems proposed, tick them when they are completed, and provide bulletins on the details of proposed solutions.
 
+Always provide a summary of the solution at the end, so the user can quickly understand what was done.
+
+Also provide a Vietnamese translation of the summary for better understanding.
